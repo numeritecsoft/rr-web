@@ -1,0 +1,113 @@
+﻿@model DashboardViewModel
+
+@* Tarjeta (card) con estilo Bootstrap para que se vea profesional *@
+<div class="card shadow-sm">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+            <i class="fas fa-table me-2"></i> Detalle de Reportes
+        </h5>
+        <span class="badge bg-light text-dark">
+            @if (Model.CategoriaSeleccionada == "Todas" || string.IsNullOrEmpty(Model.CategoriaSeleccionada))
+            {
+                <span>Todas las Autoridades</span>
+            }
+            else
+            {
+                <span>Autoridad: <strong>@Model.CategoriaSeleccionada</strong></span>
+            }
+        </span>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Acronimo</th>
+                        <th>Nombre del reporte</th>
+                        <th class="">Autoridad</th>
+                        <th class="">Entidad</th>
+                        <th class="">Tema</th>
+                        <th class="">Periodicidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.DetalleVentas != null && Model.DetalleVentas.Any())
+                    {
+                        decimal totalMonto = 0;
+                        int totalCantidad = 0;
+
+                        @foreach (var venta in Model.DetalleVentas)
+                        {
+                            totalMonto += venta.Monto;
+                            totalCantidad += venta.Cantidad;
+
+                            <tr>
+                                <td>@venta.Id</td>
+                                
+                                <td>@venta.Acronimo</td>
+                                <td class="">@venta.Nombre</td>
+                                <td class="">@venta.Autoridad</td>
+                                <td>
+                                    <span class="badge bg-info text-dark">@venta.Categoria</span>
+                                </td>
+
+                                <td class="">@venta.Tema</td>
+                                <td class="">@venta.Periodicidad</td>
+                                @* <td class="text-end">@venta.Monto.ToString("C")</td> *@
+                                @* <td class="text-center">@venta.Fecha.ToString("dd/MM/yyyy")</td> *@
+                                @* <td class="text-center">@venta.Fecha.ToString("dd/MM/yyyy")</td> *@
+                            </tr>
+                        }
+
+                        @* Fila de totales (opcional, pero buena práctica) *@
+                        @* <tr class="table-secondary fw-bold">
+                            <td colspan="3" class="text-end">TOTALES:</td>
+                            <td class="text-center">@totalCantidad</td>
+                            <td class="text-end">@totalMonto.ToString("C")</td>
+                            <td></td>
+                        </tr> *@
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center py-4">
+                                <div class="alert alert-info mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No hay reportes para mostrar para esta autoridad
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @* @if (Model.DetalleVentas != null && Model.DetalleVentas.Any())
+    {
+        <div class="card-footer text-muted small">
+            <i class="fas fa-chart-line me-1"></i>
+            Mostrando @Model.DetalleVentas.Count registro(s) •
+            Última actualización: @DateTime.Now.ToString("HH:mm:ss")
+        </div>
+    } *@
+</div>
+
+@* Estilos adicionales (opcional, para mejorar la apariencia) *@
+<style>
+    .table-hover tbody tr:hover {
+        background-color: rgba(66, 133, 244, 0.05);
+        cursor: pointer;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.7rem;
+    }
+
+    .card-footer {
+        background-color: rgba(0,0,0,0.02);
+    }
+</style>

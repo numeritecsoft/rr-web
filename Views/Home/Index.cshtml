@@ -1,0 +1,83 @@
+﻿@model DashboardViewModel
+
+<h2>Dashboard de reportes</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <canvas id="ventasChart" style="height: 400px; width: 100%;"></canvas>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12" id="detalleContainer">
+        @await Html.PartialAsync("_TablaDetalle", Model)
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Datos desde el modelo (igual que antes)
+        const categorias = @Html.Raw(Json.Serialize(Model.VentasPorCategoria.Keys));
+        const valores = @Html.Raw(Json.Serialize(Model.VentasPorCategoria.Values));
+
+        // Obtener el contexto del canvas
+        const ctx = document.getElementById('ventasChart').getContext('2d');
+
+        // Crear el gráfico con evento onClick
+        const ventasChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: categorias,
+                datasets: [{
+                    label: 'Total Reportes',
+                    data: valores,
+                    backgroundColor: 'rgba(16, 121, 21, 0.7)',
+                    borderColor: 'rgba(66, 133, 244, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return  value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                // ¡EL EVENTO QUE NECESITAS!
+                onClick: function(event, elements) {
+                    // Verificar si hizo clic en una barra
+                    if (elements && elements.length > 0) {
+                        // Obtener el índice de la barra clickeada
+                        const index = elements[0].index;
+                        const categoriaSeleccionada = categorias[index];
+
+                        // Mostrar indicador de carga (opcional)
+                        $('#detalleContainer').html('<div class="text-center">Cargando detalles...</div>');
+
+                        // Llamar al servidor vía AJAX
+                        $.ajax({
+                            url: '@Url.Action("FiltrarPorCategoria", "Home")',
+                            type: 'POST',
+                            data: { categoria: categoriaSeleccionada },
+                            success: function(result) {
+                                $('#detalleContainer').html(result);
+                            },
+                            error: function() {
+                                alert('Error al cargar los detalles');
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    </script>
+}
