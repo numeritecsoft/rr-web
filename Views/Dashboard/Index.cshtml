@@ -1496,7 +1496,13 @@
                                 @foreach (var reporte in Model.Reportes)
                                 {
                                     <tr>
-                                        <td><span class="badge badge-blue">@reporte.Acronimo</span></td>
+                                        <!-- En la tabla de detalles, haz el acrónimo clickeable -->
+                                        <td>
+                                            <a href="@Url.Action("Detalle", new { acronimo = reporte.Acronimo })"
+                                               style="text-decoration: none;">
+                                                <span class="badge badge-blue" style="cursor: pointer;">@reporte.Acronimo</span>
+                                            </a>
+                                        </td>
                                         <td>@reporte.NombreReporte</td>
                                         <td>@reporte.Autoridad</td>
                                         <td>@reporte.Entidad</td>

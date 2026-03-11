@@ -1,0 +1,810 @@
+﻿@model ReporteCompletoViewModel
+
+@{
+    ViewData["Title"] = $"Detalle del Reporte - {Model.Reporte.Acronimo}";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a1929 0%, #1a2b3c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Menú lateral izquierdo (mismo estilo que dashboard) */
+        .left-menu {
+            width: 280px;
+            background: rgba(10, 25, 45, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(0, 255, 255, 0.2);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 25px 20px;
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 20px;
+        }
+
+        /* Header del detalle */
+        .detail-header {
+            background: rgba(18, 30, 45, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6b8cae;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+            .breadcrumb a {
+                color: #00c6ff;
+                text-decoration: none;
+            }
+
+            .breadcrumb i {
+                font-size: 12px;
+            }
+
+        .report-title {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .report-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0072ff, #00c6ff);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .report-icon i {
+                font-size: 30px;
+                color: white;
+            }
+
+        .report-info h1 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .report-info .acronimo {
+            color: #00c6ff;
+            font-size: 14px;
+            background: rgba(0, 198, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .status-badge {
+            margin-left: auto;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+            .status-badge.enviado {
+                background: rgba(0, 255, 136, 0.1);
+                border: 1px solid #00ff88;
+            }
+
+            .status-badge.pendiente {
+                background: rgba(255, 193, 7, 0.1);
+                border: 1px solid #ffc107;
+            }
+
+            .status-badge.atrasado {
+                background: rgba(244, 67, 54, 0.1);
+                border: 1px solid #f44336;
+            }
+
+        .status-text {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .status-date {
+            color: #8a9bb5;
+            font-size: 12px;
+        }
+
+        /* Grid de información */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .info-card {
+            background: rgba(18, 30, 45, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+            .info-card h3 {
+                color: #8a9bb5;
+                font-size: 14px;
+                font-weight: 400;
+                margin-bottom: 15px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+                .info-card h3 i {
+                    color: #00c6ff;
+                }
+
+        .info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #1e3a5f;
+        }
+
+        .info-label {
+            color: #8a9bb5;
+            font-size: 13px;
+        }
+
+        .info-value {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .days-counter {
+            text-align: center;
+            padding: 15px;
+            background: #1e3a5f;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .days-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #00c6ff;
+            line-height: 1;
+        }
+
+        .days-label {
+            color: #8a9bb5;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Calendario */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .calendar-header {
+            color: #8a9bb5;
+            font-size: 11px;
+            text-align: center;
+            padding: 5px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            background: #1e3a5f;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #fff;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .calendar-day:hover {
+                background: #2a4a7a;
+                transform: scale(1.05);
+            }
+
+            .calendar-day.has-event {
+                background: linear-gradient(135deg, #0072ff, #00c6ff);
+            }
+
+            .calendar-day.completed {
+                background: #4CAF50;
+            }
+
+        .event-indicator {
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            margin-top: 2px;
+        }
+
+        /* Documentos */
+        .documents-list {
+            margin-top: 15px;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #1e3a5f;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+            .document-item:hover {
+                background: #2a4a7a;
+                transform: translateX(5px);
+            }
+
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 198, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00c6ff;
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-name {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+
+        .document-meta {
+            color: #8a9bb5;
+            font-size: 11px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 30px;
+            height: 30px;
+            background: transparent;
+            border: 1px solid #3a5a7a;
+            border-radius: 8px;
+            color: #8a9bb5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-icon:hover {
+                background: #0072ff;
+                color: white;
+                border-color: #0072ff;
+            }
+
+        /* Upload area */
+        .upload-area {
+            border: 2px dashed #1e3a5f;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .upload-area:hover {
+                border-color: #00c6ff;
+                background: rgba(0, 198, 255, 0.05);
+            }
+
+            .upload-area i {
+                font-size: 30px;
+                color: #00c6ff;
+                margin-bottom: 10px;
+            }
+
+            .upload-area p {
+                color: #8a9bb5;
+                font-size: 13px;
+            }
+
+        /* Estadísticas */
+        .stats-progress {
+            margin-top: 15px;
+        }
+
+        .progress-item {
+            margin-bottom: 12px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .progress-label {
+            color: #8a9bb5;
+            font-size: 12px;
+        }
+
+        .progress-value {
+            color: #00c6ff;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #1e3a5f;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        /* Historial */
+        .history-timeline {
+            margin-top: 20px;
+            position: relative;
+        }
+
+            .history-timeline::before {
+                content: '';
+                position: absolute;
+                left: 15px;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: #1e3a5f;
+            }
+
+        .history-item {
+            display: flex;
+            gap: 20px;
+            padding: 15px 0 15px 30px;
+            position: relative;
+        }
+
+            .history-item::before {
+                content: '';
+                position: absolute;
+                left: 9px;
+                top: 20px;
+                width: 14px;
+                height: 14px;
+                border-radius: 50%;
+                background: #00c6ff;
+                border: 3px solid #1e3a5f;
+                z-index: 1;
+            }
+
+        .history-date {
+            min-width: 100px;
+            color: #8a9bb5;
+            font-size: 12px;
+        }
+
+        .history-content {
+            flex: 1;
+        }
+
+        .history-status {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .history-details {
+            color: #8a9bb5;
+            font-size: 12px;
+        }
+
+        .history-acuse {
+            color: #00c6ff;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            background: #1e3a5f;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+            .back-button:hover {
+                background: #0072ff;
+                transform: translateX(-5px);
+            }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Menú lateral izquierdo (mismo que dashboard) -->
+        <div class="left-menu">
+            <!-- ... copiar el menú del dashboard aquí ... -->
+        </div>
+
+        <div class="main-content">
+            <a href="@Url.Action("Index")" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Dashboard
+            </a>
+
+            <!-- Header con información principal -->
+            <div class="detail-header">
+                <div class="breadcrumb">
+                    <a href="@Url.Action("Index")">Dashboard</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>@Model.Reporte.Acronimo</span>
+                </div>
+
+                <div class="report-title">
+                    <div class="report-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="report-info">
+                        <h1>@Model.Reporte.NombreReporte</h1>
+                        <span class="acronimo">@Model.Reporte.Acronimo</span>
+                    </div>
+
+                    @{
+                        var diasFaltantes = Model.Reporte.FechaProximoEnvio.HasValue ?
+                        (Model.Reporte.FechaProximoEnvio.Value - DateTime.Now).Days : 0;
+                        var statusClass = Model.Reporte.Enviado ? "enviado" :
+                        (diasFaltantes < 0 ? "atrasado" : "pendiente");
+                        var statusText = Model.Reporte.Enviado ? "ENVIADO" :
+                        (diasFaltantes < 0 ? "ATRASADO" :
+                        (diasFaltantes <= 5 ? "POR VENCER" : "PENDIENTE"));
+                    }
+
+                    <div class="status-badge @statusClass">
+                        <div class="status-text">@statusText</div>
+                        @if (Model.Reporte.Enviado)
+                        {
+                            <div class="status-date">
+                                <i class="fas fa-check-circle"></i>
+                                Enviado: @(Model.Reporte.FechaEnvio?.ToString("dd/MM/yyyy"))
+                            </div>
+                        }
+                        else if (Model.Reporte.FechaProximoEnvio.HasValue)
+                        {
+                            <div class="status-date">
+                                <i class="fas fa-calendar"></i>
+                                Límite: @Model.Reporte.FechaProximoEnvio.Value.ToString("dd/MM/yyyy")
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid de información principal -->
+            <div class="info-grid">
+                <!-- Información del reporte -->
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> Información General</h3>
+                    <div class="info-content">
+                        <div class="info-row">
+                            <span class="info-label">Autoridad</span>
+                            <span class="info-value">@Model.Reporte.Autoridad</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Entidad</span>
+                            <span class="info-value">@Model.Reporte.Entidad</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Tema</span>
+                            <span class="info-value">@Model.Reporte.Tema</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Periodicidad</span>
+                            <span class="info-value">@Model.Reporte.Periodicidad</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Director</span>
+                            <span class="info-value">@Model.Reporte.N3Generacion</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contador de días -->
+                <div class="info-card">
+                    <h3><i class="fas fa-hourglass-half"></i> Tiempo Restante</h3>
+                    @if (!Model.Reporte.Enviado && Model.Reporte.FechaProximoEnvio.HasValue)
+                    {
+                        var dias = (Model.Reporte.FechaProximoEnvio.Value - DateTime.Now).Days;
+                        var horas = (Model.Reporte.FechaProximoEnvio.Value - DateTime.Now).Hours;
+                        <div class="days-counter">
+                            <div class="days-number">@dias</div>
+                            <div class="days-label">días restantes</div>
+                            <div style="color: #8a9bb5; font-size: 11px; margin-top: 5px;">
+                                (@horas horas aproximadamente)
+                            </div>
+                        </div>
+                        if (dias <= 5)
+                        {
+                            <div style="color: #ffc107; font-size: 12px; text-align: center; margin-top: 10px;">
+                                <i class="fas fa-exclamation-triangle"></i> Próximo a vencer
+                            </div>
+                        }
+                    }
+                    else if (Model.Reporte.Enviado)
+                    {
+                        <div class="days-counter" style="background: rgba(0, 255, 136, 0.1);">
+                            <i class="fas fa-check-circle" style="font-size: 40px; color: #00ff88;"></i>
+                            <div class="days-label" style="margin-top: 10px;">Envío completado</div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Estadísticas rápidas -->
+                <div class="info-card">
+                    <h3><i class="fas fa-chart-pie"></i> Estadísticas</h3>
+                    <div class="stats-progress">
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">Envíos totales</span>
+                                <span class="progress-value">@Model.Estadisticas.TotalEnvios</span>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">Exitosos</span>
+                                <span class="progress-value">@Model.Estadisticas.Enviados (@Model.Estadisticas.PorcentajeExito%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: @Model.Estadisticas.PorcentajeExito%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">Pendientes</span>
+                                <span class="progress-value">@Model.Estadisticas.Pendientes</span>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">Atrasados</span>
+                                <span class="progress-value" style="color: #f44336;">@Model.Estadisticas.Atrasados</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendario y Documentos -->
+            <div class="info-grid">
+                <!-- Calendario -->
+                <div class="info-card">
+                    <h3><i class="fas fa-calendar-alt"></i> Calendario de Envíos</h3>
+                    <div class="calendar-header">
+                        <div class="calendar-grid">
+                            <div class="calendar-header">LUN</div>
+                            <div class="calendar-header">MAR</div>
+                            <div class="calendar-header">MIÉ</div>
+                            <div class="calendar-header">JUE</div>
+                            <div class="calendar-header">VIE</div>
+                            <div class="calendar-header">SÁB</div>
+                            <div class="calendar-header">DOM</div>
+                        </div>
+                    </div>
+                    <div class="calendar-grid">
+                        @{
+                            var today = DateTime.Now;
+                            var firstDay = new DateTime(today.Year, today.Month, 1);
+                            var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
+                            var startOffset = (int)firstDay.DayOfWeek == 0 ? 6 : (int)firstDay.DayOfWeek - 1;
+
+                            for (int i = 0; i < startOffset; i++)
+                            {
+                                <div class="calendar-day" style="background: transparent;"></div>
+                            }
+
+                            for (int day = 1; day <= daysInMonth; day++)
+                            {
+                                var currentDate = new DateTime(today.Year, today.Month, day);
+                                var eventosDelDia = Model.ProximosEventos.Where(e => e.Fecha.Date == currentDate.Date).ToList();
+                                var tieneEvento = eventosDelDia.Any();
+                                var completado = eventosDelDia.Any(e => e.Completado);
+
+                                <div class="calendar-day @(completado ? "completed" : (tieneEvento ? "has-event" : ""))">
+                                    <span>@day</span>
+                                    @if (tieneEvento)
+                                    {
+                                        <span class="event-indicator"></span>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div style="margin-top: 15px;">
+                        @foreach (var evento in Model.ProximosEventos.Take(3))
+                        {
+                            <div style="display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid #1e3a5f;">
+                                <i class="fas fa-circle" style="font-size: 8px; color: @(evento.Completado ? "#4CAF50" : "#00c6ff");"></i>
+                                <span style="color: #fff; font-size: 12px;">@evento.Titulo</span>
+                                <span style="margin-left: auto; color: #8a9bb5; font-size: 11px;">@evento.Fecha.ToString("dd/MM")</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Documentos y Acuses -->
+                <div class="info-card" style="grid-column: span 2;">
+                    <h3><i class="fas fa-file-pdf"></i> Acuses de Envío</h3>
+
+                    <!-- Área de subida -->
+                    <form asp-action="SubirAcuse" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="acronimo" value="@Model.Reporte.Acronimo" />
+                        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                            <input type="file" id="fileInput" name="archivo" style="display: none;" onchange="this.form.submit()" />
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Haz clic para subir un acuse</p>
+                            <p style="font-size: 11px;">PDF, JPG o PNG (máx 10MB)</p>
+                        </div>
+                    </form>
+
+                    <!-- Lista de documentos -->
+                    <div class="documents-list">
+                        @foreach (var acuse in Model.Acuses)
+                        {
+                            <div class="document-item">
+                                <div class="document-icon">
+                                    <i class="fas fa-file-pdf"></i>
+                                </div>
+                                <div class="document-info">
+                                    <div class="document-name">@acuse.NombreArchivo</div>
+                                    <div class="document-meta">
+                                        <span><i class="far fa-calendar"></i> @acuse.FechaSubida.ToString("dd/MM/yyyy")</span>
+                                        <span><i class="far fa-user"></i> @acuse.UsuarioSubio</span>
+                                        <span><i class="far fa-file"></i> @(acuse.Tamaño / 1024) KB</span>
+                                    </div>
+                                </div>
+                                <div class="document-actions">
+                                    <a href="@Url.Action("DescargarAcuse", new { id = acuse.Id })" class="btn-icon" title="Descargar">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                    <button class="btn-icon" title="Ver" onclick="window.open('@acuse.RutaArchivo')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Historial de Envíos -->
+            <div class="info-card" style="margin-top: 25px;">
+                <h3><i class="fas fa-history"></i> Historial de Envíos</h3>
+                <div class="history-timeline">
+                    @foreach (var historial in Model.HistorialEnvios)
+                    {
+                        <div class="history-item">
+                            <div class="history-date">@historial.Fecha.ToString("dd/MM/yyyy")</div>
+                            <div class="history-content">
+                                <div class="history-status">
+                                    @historial.Estatus
+                                    @if (historial.AcuseGenerado)
+                                    {
+                                        <i class="fas fa-check-circle" style="color: #00ff88; margin-left: 8px;"></i>
+                                    }
+                                </div>
+                                <div class="history-details">@historial.Observaciones</div>
+                                <div class="history-details">Usuario: @historial.Usuario</div>
+                                @if (historial.AcuseGenerado)
+                                {
+                                    <div class="history-acuse">
+                                        <i class="fas fa-file-pdf"></i> Acuse generado automáticamente
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Botón para registrar envío manual -->
+            @if (!Model.Reporte.Enviado)
+            {
+                <div style="margin-top: 25px; text-align: right;">
+                    <form asp-action="RegistrarEnvio" method="post" style="display: inline;">
+                        <input type="hidden" name="acronimo" value="@Model.Reporte.Acronimo" />
+                        <button type="submit" class="btn-login" style="width: auto; padding: 12px 30px;">
+                            <i class="fas fa-check-circle"></i> Marcar como Enviado
+                        </button>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        // Actualizar el menú para mostrar la página activa
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.querySelector('span').textContent.includes('Dashboard')) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
