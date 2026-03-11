@@ -680,6 +680,224 @@
         }
 
         }
+
+
+
+
+
+
+        /* Estilos para gráficas */
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .chart-card {
+            background: rgba(18, 30, 45, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #1e3a5f;
+        }
+
+            .chart-header h3 {
+                color: #fff;
+                font-size: 16px;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+                .chart-header h3 i {
+                    color: #00c6ff;
+                    font-size: 18px;
+                }
+
+        .chart-legend {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #8a9bb5;
+        }
+
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+            margin-top: 15px;
+        }
+
+        /* Gráfica de barras */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            height: 180px;
+            padding: 10px 0;
+        }
+
+        .bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40px;
+        }
+
+        .bar {
+            width: 30px;
+            background: linear-gradient(180deg, #0072ff, #00c6ff);
+            border-radius: 6px 6px 0 0;
+            transition: height 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+            .bar:hover {
+                filter: brightness(1.2);
+                transform: scaleX(1.1);
+            }
+
+                .bar:hover::after {
+                    content: attr(data-value);
+                    position: absolute;
+                    top: -25px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: #1e3a5f;
+                    color: #00c6ff;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    font-size: 11px;
+                    white-space: nowrap;
+                    z-index: 10;
+                }
+
+        .bar-label {
+            color: #8a9bb5;
+            font-size: 11px;
+            margin-top: 8px;
+            transform: rotate(-45deg);
+            white-space: nowrap;
+        }
+
+        /* Gráfica de pastel */
+        .pie-chart {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: conic-gradient( #0072ff 0% 38.34%, #00c6ff 38.34% 62.88%, #4CAF50 62.88% 75.46%, #FF9800 75.46% 85.58%, #9C27B0 85.58% 92.64%, #f44336 92.64% 95.71%, #607D8B 95.71% 97.55%, #795548 97.55% 98.78%, #FFC107 98.78% 99.7%, #E91E63 99.7% 100% );
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+            .pie-chart::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 60px;
+                height: 60px;
+                background: #0a1929;
+                border-radius: 50%;
+            }
+
+        /* Gráfica de dona */
+        .donut-chart {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #0a1929 40%, transparent 41%), conic-gradient( #0072ff 0% 35.89%, #00c6ff 35.89% 59.82%, #4CAF50 59.82% 71.48%, #FF9800 71.48% 81.91%, #9C27B0 81.91% 85.9%, #f44336 85.9% 88.66%, #607D8B 88.66% 91.42%, #795548 91.42% 94.18%, #FFC107 94.18% 95.1%, #E91E63 95.1% 95.71%, #3F51B5 95.71% 96.32%, #009688 96.32% 96.93%, #FF5722 96.93% 97.24%, #673AB7 97.24% 97.55%, #2196F3 97.55% 97.86%, #FFEB3B 97.86% 100% );
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+            .donut-chart::before {
+                content: '326';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                color: #00c6ff;
+                font-size: 24px;
+                font-weight: bold;
+                z-index: 2;
+            }
+
+        /* Gráfica de líneas */
+        .line-chart {
+            position: relative;
+            height: 150px;
+            margin: 20px 0;
+        }
+
+            .line-chart svg {
+                width: 100%;
+                height: 100%;
+            }
+
+            .line-chart polyline {
+                fill: none;
+                stroke: #00c6ff;
+                stroke-width: 2;
+                filter: drop-shadow(0 0 5px rgba(0, 198, 255, 0.5));
+            }
+
+        .chart-grid line {
+            stroke: #1e3a5f;
+            stroke-width: 0.5;
+        }
+
+        .chart-point {
+            fill: #0072ff;
+            transition: r 0.3s ease;
+        }
+
+            .chart-point:hover {
+                r: 6;
+                fill: #00c6ff;
+            }
+
+        /* Mini gráficas para tarjetas */
+        .mini-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 40px;
+            margin-top: 10px;
+        }
+
+        .mini-bar {
+            width: 8px;
+            background: linear-gradient(180deg, #0072ff, #00c6ff);
+            border-radius: 3px 3px 0 0;
+            transition: height 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -919,6 +1137,189 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Gráficas principales -->
+                <div class="charts-row">
+                    <!-- Gráfica de pastel - Autoridades -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Distribución por Autoridad</h3>
+                            <div class="chart-legend">
+                                <span class="legend-item"><span class="legend-color" style="background: #0072ff;"></span> CNBV (38.3%)</span>
+                                <span class="legend-item"><span class="legend-color" style="background: #00c6ff;"></span> BANXICO (24.5%)</span>
+                            </div>
+                        </div>
+                        <div class="pie-chart"></div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px;">
+                            @foreach (var item in Model.Autoridades.Take(6))
+                            {
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #8a9bb5; font-size: 11px;">@item.Nombre</span>
+                                    <span style="color: #00c6ff; font-weight: 600;">@item.Porcentaje%</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Gráfica de dona - Directores -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-pie"></i> Top Directores</h3>
+                            <div class="chart-legend">
+                                <span class="legend-item"><span class="legend-color" style="background: #0072ff;"></span> Juan R. (35.9%)</span>
+                                <span class="legend-item"><span class="legend-color" style="background: #00c6ff;"></span> Hugo R. (23.9%)</span>
+                            </div>
+                        </div>
+                        <div class="donut-chart"></div>
+                        <div style="margin-top: 20px;">
+                            @foreach (var item in Model.Directores.Take(5))
+                            {
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                    <span style="color: #8a9bb5; font-size: 11px; width: 100px;">@item.Nombre</span>
+                                    <div style="flex: 1; height: 6px; background: #1e3a5f; border-radius: 3px;">
+                                        <div style="width: @item.Porcentaje%; height: 100%; background: linear-gradient(90deg, #0072ff, #00c6ff); border-radius: 3px;"></div>
+                                    </div>
+                                    <span style="color: #00c6ff; font-size: 11px;">@item.Porcentaje%</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Gráfica de barras - Frecuencias -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-bar"></i> Frecuencia de Reportes</h3>
+                        </div>
+                        <div class="bar-chart">
+                            @{
+                                var frecuenciasTop = Model.Frecuencias.Take(6).ToList();
+                                var maxFrecuencia = frecuenciasTop.Max(f => f.Cantidad);
+                            }
+                            @foreach (var item in frecuenciasTop)
+                            {
+                                var altura = (item.Cantidad * 150) / maxFrecuencia;
+                                <div class="bar-wrapper">
+                                    <div class="bar" style="height: @(altura)px;" data-value="@item.Cantidad reportes"></div>
+                                    <span class="bar-label">@item.Nombre</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Segunda fila de gráficas -->
+                <div class="charts-row">
+                    <!-- Gráfica de líneas - Tendencia mensual -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-line"></i> Tendencia de Reportes</h3>
+                        </div>
+                        <div class="line-chart">
+                            <svg viewBox="0 0 300 150">
+                                <!-- Grid horizontal -->
+                                <line x1="20" y1="20" x2="280" y2="20" stroke="#1e3a5f" stroke-dasharray="4 4" />
+                                <line x1="20" y1="60" x2="280" y2="60" stroke="#1e3a5f" stroke-dasharray="4 4" />
+                                <line x1="20" y1="100" x2="280" y2="100" stroke="#1e3a5f" stroke-dasharray="4 4" />
+                                <line x1="20" y1="140" x2="280" y2="140" stroke="#1e3a5f" stroke-dasharray="4 4" />
+
+                                <!-- Línea de tendencia -->
+                                <polyline points="
+                    20,140
+                    63,100
+                    106,80
+                    149,40
+                    192,60
+                    235,90
+                    280,70
+                " stroke="#00c6ff" stroke-width="2" fill="none" />
+
+                                <!-- Puntos de datos -->
+                                <circle cx="20" cy="140" r="4" class="chart-point" />
+                                <circle cx="63" cy="100" r="4" class="chart-point" />
+                                <circle cx="106" cy="80" r="4" class="chart-point" />
+                                <circle cx="149" cy="40" r="4" class="chart-point" />
+                                <circle cx="192" cy="60" r="4" class="chart-point" />
+                                <circle cx="235" cy="90" r="4" class="chart-point" />
+                                <circle cx="280" cy="70" r="4" class="chart-point" />
+                            </svg>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 10px; color: #8a9bb5; font-size: 10px;">
+                            <span>Ene</span>
+                            <span>Feb</span>
+                            <span>Mar</span>
+                            <span>Abr</span>
+                            <span>May</span>
+                            <span>Jun</span>
+                            <span>Jul</span>
+                        </div>
+                    </div>
+
+                    <!-- Gráfica de temas -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-tags"></i> Distribución por Tema</h3>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            @foreach (var item in Model.Temas.Take(5))
+                            {
+                                <div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                        <span style="color: #8a9bb5; font-size: 12px;">@item.Nombre</span>
+                                        <span style="color: #00c6ff; font-weight: 600;">@item.Porcentaje%</span>
+                                    </div>
+                                    <div style="width: 100%; height: 8px; background: #1e3a5f; border-radius: 4px;">
+                                        <div style="width: @item.Porcentaje%; height: 100%; background: linear-gradient(90deg, #0072ff, #00c6ff); border-radius: 4px;"></div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div style="margin-top: 15px; text-align: center;">
+                            <span style="color: #8a9bb5; font-size: 11px;">Tema principal: </span>
+                            <span style="color: #00c6ff; font-weight: 600;">Operativo (37.4%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Mini dashboard de métricas -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3><i class="fas fa-chart-simple"></i> Métricas Clave</h3>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div style="text-align: center; padding: 15px; background: #1e3a5f; border-radius: 12px;">
+                                <div style="color: #00c6ff; font-size: 24px; font-weight: 600;">@Model.TotalReportes</div>
+                                <div style="color: #8a9bb5; font-size: 11px;">Total Reportes</div>
+                                <div class="mini-chart">
+                                    <div class="mini-bar" style="height: 20px;"></div>
+                                    <div class="mini-bar" style="height: 35px;"></div>
+                                    <div class="mini-bar" style="height: 25px;"></div>
+                                    <div class="mini-bar" style="height: 40px;"></div>
+                                    <div class="mini-bar" style="height: 30px;"></div>
+                                    <div class="mini-bar" style="height: 45px;"></div>
+                                </div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: #1e3a5f; border-radius: 12px;">
+                                <div style="color: #00c6ff; font-size: 24px; font-weight: 600;">@Model.Autoridades.Count</div>
+                                <div style="color: #8a9bb5; font-size: 11px;">Autoridades</div>
+                                <div style="display: flex; justify-content: center; gap: 5px; margin-top: 10px;">
+                                    <span class="filter-tag" style="font-size: 9px;">CNBV</span>
+                                    <span class="filter-tag" style="font-size: 9px;">BANXICO</span>
+                                    <span class="filter-tag" style="font-size: 9px;">CONDUSEF</span>
+                                </div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: #1e3a5f; border-radius: 12px;">
+                                <div style="color: #00c6ff; font-size: 24px; font-weight: 600;">@Model.Frecuencias.Count</div>
+                                <div style="color: #8a9bb5; font-size: 11px;">Frecuencias</div>
+                                <div style="font-size: 20px; margin-top: 10px;">📊</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: #1e3a5f; border-radius: 12px;">
+                                <div style="color: #00c6ff; font-size: 24px; font-weight: 600;">@Model.Directores.Count</div>
+                                <div style="color: #8a9bb5; font-size: 11px;">Directores</div>
+                                <div style="color: #4CAF50; font-size: 13px; margin-top: 10px;">+5 activos</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Grid de tablas estadísticas -->
                 <div class="dashboard-grid">
